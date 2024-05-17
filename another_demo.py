@@ -1,23 +1,21 @@
-import sqlite3
+import hashlib
 
 def login(username, password):
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
+    # Hardcoded password for demonstration purposes (vulnerable)
+    hardcoded_password = "secretpassword"
 
-    # Vulnerable code
-    query = "SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'"
+    # Hash the user-provided password
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
-    cursor.execute(query)
-    user = cursor.fetchone()
+    # Check if the username exists and the passwords match (vulnerable)
+    if username == "admin" and hashed_password == hashlib.sha256(hardcoded_password.encode()).hexdigest():
+        print("Login successful! Welcome admin.")
+    else:
+        print("Login failed. Invalid username or password.")
 
-    conn.close()
-    return user
+# Get user input for username and password
+username = input("Enter username: ")
+password = input("Enter password: ")
 
-username = input("Enter your username: ")
-password = input("Enter your password: ")
-
-user = login(username, password)
-if user:
-    print("Login successful!")
-else:
-    print("Invalid username or password!")
+# Authenticate user
+login(username, password)
